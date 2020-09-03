@@ -8,15 +8,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-import requests, os, sys, time, threading, socket, mysql.connector
+import requests, os, sys, time, threading, socket, mysql.connector , subprocess
 from datetime import datetime
 from lxml import html
 
-
-#sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#local = socket.gethostname()
-#port = 8080
-#sock.connect((local,port))
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+local = socket.gethostname()
+port = 8080
+   
 
 _sql = mysql.connector.connect(
     host='localhost',user='root',password='',database='Raporter'
@@ -40,7 +39,10 @@ class Screenshot:
     def take(self):
         chrome.get(self.link)
         self.Click('button[data-role="close-and-accept-consent"]')
-        chrome.save_screenshot('../content/Offers/{}_{}.png'.format(self.category,self.id))
+        img_name = '../content/Offers/{}_{}.png'.format(self.category,self.id)
+        chrome.save_screenshot(img_name)
+        return img_name
+
     
     '''
     #Check if target element exists
@@ -59,7 +61,7 @@ class Screenshot:
         if self.Exists(target):
             chrome.find_element_by_css_selector(target).send_keys(Keys.RETURN)
         else:
-            print(target + " NOT FOUND")
+            return ""
 
 
 
@@ -70,6 +72,7 @@ class Network:
     def agent(self):
         _uagent = self.post(self.gate, {'random':''})
         return {'User-Agent':_uagent}
+
     def write_store(self,name,category):
         return self.post(self.gate,{'write_store':name,'category':category})
     
@@ -79,24 +82,25 @@ class Network:
             })
 
     def get(self, url):
-        agent = self.agent()
-        Debug(1,'AGENT',str(agent))
         try:
             time.sleep(.5)
-            return requests.get(url, headers = agent).content.decode('utf-8')
+            return requests.get(url, headers = self.agent()).content.decode('utf-8')
         except Exception as ex:
             Debug(0,'ERROR',str(ex))
             time.sleep(.5)
-            return requests.get(url, headers = agent).content.decode('utf-8')
+            return requests.get(url, headers = self.agent()).content.decode('utf-8')
        
 
     def post(self,url,data):
         return requests.post(url, data=data).text
     
-    #def Send(self,data):
-    #    if sock is not None:
-    #        sock.send(data.encode())
-    #        Debug(1,'SENT', '{}'.format(data))
+    def Connect(self):
+         sock.connect((local,port))
+
+    def Send(self,data):
+        if sock is not None:
+            sock.send(data.encode())
+            Debug(1,'SENT', '{}'.format(data))
             
 
 
@@ -119,8 +123,12 @@ class Paginator:
         self.url = url
         self.cat_name = cat_name
         self.xpath = '''substring(//div[@role="navigation"], string-length(//div[@role="navigation"])-2)'''
-
+    
     def Add_pages(self):
+        '''
+        #Load categories and subcategories
+        #and then send to the mysql
+        '''
         page = Network().get(self.url)
         tree = html.fromstring(page)
         number = tree.xpath(self.xpath)
@@ -138,7 +146,12 @@ class Offers:
         self.link_path = '''//a[contains(@href,'oferta')]/@href'''
         self.store_name = '''//a[@href="#aboutSeller"]/text()'''
         self.category = ''
+    
     def LoadPages(self):
+        '''
+        #Load categories and subcategories
+        #from the mysql    
+        '''
         if _sql is not None:
             cursor = _sql.cursor()
             cursor.execute('SELECT PAGE_CATEGORY, PAGE_LINK FROM PAGES')
@@ -147,25 +160,48 @@ class Offers:
                 th = threading.Thread(target=self.GetOffer(item[0],item[1]))
                 th.start()
             #sock.close()
-
+    
     def GetOffer(self,category,link):        
+        '''
+        #List all offers
+        #from the current category
+        #and send for store data extraction
+        '''
         self.category =category
         Page = Network().get(link)
         tree = html.fromstring(Page)
         links= tree.xpath(self.link_path)
         for link in links:
             #print("{} ========== {}".format(category,link))
-            #Screenshot(category,link).take()
-            #Network().Send('img${}'.format(link))
             th = threading.Thread(target = self.getStore(link))
             th.start()
 
     def getStore(self,link):
+        '''
+        # Get store name and 
+        # actual category 
+        '''
         Page = Network().get(link)
         tree = html.fromstring(Page)
         name= tree.xpath(self.store_name)[0]
-        Debug(1,'STORE  {}'.format(name), 'OFFER  {}'.format(link))
-        print(Network().write_store(name,self.category))
+        Debug(1,'STORE  {}'.format(name), '\nOFFER  {}'.format(link))
+        Network().write_store(name,self.category) 
+        self.Visualize(link,name,self.category)
+
+    def Visualize(self,link,store,category):
+        img = Screenshot(category,link).take()
+        Network().Send('stack_{}${}${}${}'.format(
+            link,store,category,img
+        ))
+                    
+
+
+class Analyzer:
+    def Run(self):
+        Network().Connect()
+        time.sleep(1)
+        Offers().LoadPages()
+
 
 def Debug(status,arg,data):
     Now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -178,7 +214,14 @@ chrome = webdriver.Chrome(executable_path=r"/usr/lib/chromium-browser/chromedriv
 if __name__ == '__main__':
     try:
         #Categories('https://allegro.pl/mapa-strony/kategorie').Load_categories()
-        Offers().LoadPages()
+        
+        if sys.argv[1] is not None:
+            cmd = sys.argv[1]
+            if cmd == "analysis":
+                Analyzer().Run()
+                
     except KeyboardInterrupt:
         chrome.quit()
-        print('TERMINATED BY USER')
+        Debug(0,'INFO','TERMINATED BY USER')
+    except IndexError:
+        Debug(0,'ERROR', 'EMPTY COMMAND')

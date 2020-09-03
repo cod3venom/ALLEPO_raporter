@@ -1,0 +1,157 @@
+html,body{
+    width: 100%; height: 100%; overflow: hidden;
+    margin: 0;  background: #ECEFF1; 
+    background-blend-mode: multiply;
+}
+.shadow{
+	box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2); 
+}
+.circle_shadow{
+    width: 52px; height: 52px; border-radius: 50%;
+	box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2); 
+}
+.flex{
+    display: flex; justify-content: flex-start; align-items: flex-start;
+    flex-wrap: wrap;
+}
+.between{
+    display: flex; justify-content: space-between; 
+}
+.centered{
+    display: flex; justify-content: center; align-items: center;
+}
+.modal {
+    display: none; position: fixed;   z-index: 1;   left: 20%; top: 20%;
+    width: 40%; height: auto;   
+     
+}
+.modal-content{
+    width: 100%; margin: 0 auto; height: auto;
+}
+.modal-header{
+    width: 100%; height: 35px;
+    background-color: #5cb85c;
+    color: white; text-align: center;
+}
+.modal-header > h2{
+    padding-left: .5rem; font-family: 'kanit_regular';
+}
+.close {
+    color: white; float: right; font-size: 28px;
+    font-weight: bold; cursor: pointer; padding-right: .5rem;  transition: 500ms;
+}
+.close:hover{
+    transition: 500ms; transform: scale(1.5rem);
+}
+ 
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+.content{
+    width: 98%;   height: auto;  background-color:  #ECEFF1; 
+    margin: 0 auto;
+}
+.analytica{
+    width: 100%; height: 100px; background-color:  #FFF;  margin-top: 1%;
+}
+.analytica > div{
+    width: 49%; height: 100%;
+}
+.analytica > .stores{
+    background-color: #5cb85c;
+}
+.analytica > .offers{
+    background-color: red;
+}
+.analytica_header {
+   color: #FFF; font-family: 'kanit_regular'; font-size:17px; padding-left: .5rem; padding-top: .5rem;
+}
+.analytica_numbers{
+    width:100%; height: auto; padding-bottom: 2rem;
+}
+.analytica_numbers > span{
+    font-family: 'comforta_bold'; color: #ffffff; font-size:40px; overflow: hidden;
+}
+#Board{
+    width: 100%; height:auto; margin-top: 1%;  padding-bottom: 2%;   height: auto;
+    
+}
+.stack{
+    width: 100%; height: auto; background-color: red;
+}
+.stack>div:last-child>div:nth-child(2){
+    display: none;
+}
+.itemBox{
+   width: 50px; height: 50px; cursor: pointer;
+    margin-left: 2%; margin-top: 2%;   position: relative; 
+}
+ 
+.itemBox .item_body{
+    width: 100%; height: 100%;  text-align: center;
+    position: relative;
+}
+.itemBox .item_body .item_img img{
+    width: 50px; height: 50px; border-radius: 50%;
+    transition: 500ms;  
+}
+.item_footer{
+    display: block; width: 100%; 
+}
+.item_footer > div{
+    display: none;
+}
+.itemBox:hover .item_footer > .item_category{
+   transition: 500ms; display: block; position: absolute; left:-50%; top: -50%; font-family: 'proxima_bold';
+   color:  #5cb85c;;
+}
+.itemBox:hover .item_footer > .item_category>span{
+    width: 100%; display: block;
+}
+.line{
+    background-color: #FF5900;
+}
+.line_x{
+    position: absolute;
+    width: 35px; height: 1px; right: -35px; top: 25px;
+}
+.line_y{
+    position: absolute;
+    height: 25px; width: 1px; bottom: -25px; left: 25px;
+}
+ 
+#preview > .itemBox{
+    width: 100%; height: 100%; margin: 0 auto;
+}
+#preview > .itemBox > .item_body{
+    width: 100%; height: 100%;
+}
+#preview > .itemBox > .item_body > .item_img > img{
+    width: 100%; height: 40%; border-radius: 0%;
+}
+#preview > .itemBox > .item_body >.item_footer > div{
+    display: block; width: 100%; text-align: center;
+}
+#preview > .itemBox > .item_body > .item_footer > .item_category{
+    display: none;
+}
+#preview > .itemBox > .item_body > .item_footer > .store_name{
+    width: 100%; height: 35px; line-height:35px; background-color: #ffffff; color: #FF5900;
+    font-family: 'kanit_regular'; text-align: center;
+}
+#preview > .itemBox > .item_body > .item_footer > .item_show > a {
+    text-decoration: none;
+}
+#preview > .itemBox > .item_body > .item_footer > .item_show > a > button{
+    display: block; width: 100%; height: 35px;  background-color: #FF5900; color: #FFF;
+    font-family: 'kanit_regular'; font-size: 22px; letter-spacing: 1px; border:none; outline: none;
+    cursor: pointer;
+}
+
+ 
