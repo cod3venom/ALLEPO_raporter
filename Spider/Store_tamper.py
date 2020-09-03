@@ -68,7 +68,7 @@ class Screenshot:
 
 class Network:
     def __init__(self):
-        self.gate = 'http://192.168.1.222/raporter/index.php?'
+        self.gate = 'http://localhost/raporter/index.php?'
     
     def agent(self):
         _uagent = self.post(self.gate, {'random':''})
@@ -173,6 +173,7 @@ class Offers:
         links= tree.xpath(self.link_path)
         for link in links:
            self.getStore(link)
+        Debug(1,'INFO','PROCES HAS BEEN END SUCCESSFULLY')
             
         
     def getStore(self,link):
@@ -185,7 +186,7 @@ class Offers:
         name= tree.xpath(self.store_name)[0]
         
         resp = Network().write_store(name,self.category) 
-        print(resp)
+        Debug(0,'info','{}  =  STORE  {}'.format(resp,name))
         if screen and  resp != 'duplicate':
             Debug(1,'[OFFER]', link)
             self.Visualize(link,name,self.category)
@@ -207,16 +208,21 @@ class Analyzer:
     def noScreen(self):
         Offers().LoadPages()
 
+debug_no = 0
+
 def Debug(status,arg,data):
+    global debug_no
+    debug_no = debug_no + 1
     Now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     if status is not None and arg != "" and data !="":
         if status > 0:
-            print('['+str(Now)+'] [+] ' + data + '\n')
+            print('['+str(Now)+'] [+] ['+str(debug_no)+']' + data)
         else:
-            print('['+str(Now)+'] [-] ' + data + '\n')
+            print('['+str(Now)+'] [+] ['+str(debug_no)+']' + data)
 
 chrome = webdriver.Chrome(executable_path=r"/usr/lib/chromium-browser/chromedriver", chrome_options=Screenshot('','').config_browser())
 screen = None
+ 
 if __name__ == '__main__':
     try:
         #Categories('https://allegro.pl/mapa-strony/kategorie').Load_categories()
