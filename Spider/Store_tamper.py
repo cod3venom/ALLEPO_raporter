@@ -20,6 +20,7 @@ port = 8080
 _sql = mysql.connector.connect(
     host='localhost',user='root',password='',database='Raporter'
 )
+
 class Screenshot:
     def __init__(self,category,url):
         self.link = url
@@ -95,12 +96,12 @@ class Network:
         return requests.post(url, data=data).text
     
     def Connect(self):
-         sock.connect((local,port))
+        if screen:
+            sock.connect((local,port))
 
     def Send(self,data):
         if sock is not None:
             sock.send(data.encode())
-            Debug(1,'SENT', '{}'.format(data))
             
 
 
@@ -157,10 +158,9 @@ class Offers:
             cursor.execute('SELECT PAGE_CATEGORY, PAGE_LINK FROM PAGES')
             stack = cursor.fetchall()
             for item in stack:
-                th = threading.Thread(target=self.GetOffer(item[0],item[1]))
-                th.start()
-            #sock.close()
-    
+                self.GetOffer(item[0],item[1])
+                
+            
     def GetOffer(self,category,link):        
         '''
         #List all offers
@@ -172,10 +172,9 @@ class Offers:
         tree = html.fromstring(Page)
         links= tree.xpath(self.link_path)
         for link in links:
-            #print("{} ========== {}".format(category,link))
-            th = threading.Thread(target = self.getStore(link))
-            th.start()
-
+           self.getStore(link)
+            
+        
     def getStore(self,link):
         '''
         # Get store name and 
@@ -184,9 +183,12 @@ class Offers:
         Page = Network().get(link)
         tree = html.fromstring(Page)
         name= tree.xpath(self.store_name)[0]
-        Debug(1,'STORE  {}'.format(name), '\nOFFER  {}'.format(link))
-        Network().write_store(name,self.category) 
-        self.Visualize(link,name,self.category)
+        
+        resp = Network().write_store(name,self.category) 
+        print(resp)
+        if screen and  resp != 'duplicate':
+            Debug(1,'[OFFER]', link)
+            self.Visualize(link,name,self.category)
 
     def Visualize(self,link,store,category):
         img = Screenshot(category,link).take()
@@ -202,23 +204,32 @@ class Analyzer:
         time.sleep(1)
         Offers().LoadPages()
 
+    def noScreen(self):
+        Offers().LoadPages()
 
 def Debug(status,arg,data):
     Now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    if status > 0:
-        print('[{}] [+] [{}] {} \r\n'.format(Now, arg,data))
-    else:
-        print('[{}] [-] [{}] {}\r\n'.format(Now, arg,data))
+    if status is not None and arg != "" and data !="":
+        if status > 0:
+            print('['+str(Now)+'] [+] ' + data + '\n')
+        else:
+            print('['+str(Now)+'] [-] ' + data + '\n')
 
 chrome = webdriver.Chrome(executable_path=r"/usr/lib/chromium-browser/chromedriver", chrome_options=Screenshot('','').config_browser())
+screen = None
 if __name__ == '__main__':
     try:
         #Categories('https://allegro.pl/mapa-strony/kategorie').Load_categories()
         
-        if sys.argv[1] is not None:
-            cmd = sys.argv[1]
-            if cmd == "analysis":
+        if sys.argv[1] is not None and sys.argv[2] is not None:
+            cmd_1 = sys.argv[1]
+            cmd_2 = sys.argv[2]
+            if cmd_1 == "analysis" and cmd_2 == 'screenshot':
+                screen = True
                 Analyzer().Run()
+            if cmd_1 == "analysis" and cmd_2 == 'noscreen':
+                Analyzer().noScreen()
+                screen = False
                 
     except KeyboardInterrupt:
         chrome.quit()
