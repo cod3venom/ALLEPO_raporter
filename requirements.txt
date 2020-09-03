@@ -1,0 +1,6 @@
+Beautifulsoup4
+selenium
+lxml
+tqdm
+mysql-connector-python
+requests
