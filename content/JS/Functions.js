@@ -80,7 +80,37 @@ class HTML extends Network
         $output = this.replaceAll($output, "STORE++;",store);
         $output = $output.replace('LINK++;',link);
 
+        for(var a of stack)
+        {
+            var nodes = new vis.DataSet([
+                {id: a+1, label:  store+' '+a.toString()},
+                {id: a+2, label: 'Node '+a.toString()},
+                {id: a+3, label: 'Node '+a.toString()},
+                {id: a+4, label: 'Node '+a.toString()},
+                {id: a+5, label: 'Node '+a.toString()},
+              ]);
+             // create an array with edges
+            var edges = new vis.DataSet([
+                {from: a+1, to: 3},
+                {from: a+1, to: 2},
+                {from: a+2, to: 4},
+                {from: a+2, to: 5},
+                {from:a+3, to: 3}
+            ]);
+             
+        }
+         
+        
+          // create a network
+          var container = document.getElementById('Board');
+          var data = {
+            nodes: nodes,
+            edges: edges
+          };
+          var options = {};
+          var network = new vis.Network(container, data, options);
         $desktop.Board().append($output);
+        
     }
    
 }
@@ -89,12 +119,12 @@ $desktop = new Desktop();
 $html = new HTML();
 stack = []; 
  
-//for($i=0; $i<60; $i++)
-//{
-//    $html.LoadItems($i);
-//    //stack.push($i);
-//  
-//}
+for($i=0; $i<20; $i++)
+{
+    $html.LoadItems("https://google.com","Market","CARS","https://visjs.org/images/visjs_logo.png");
+    stack.push($i);
+  
+}
 var modal = $('.modal');
 var header = $(".modal > .modal-content>.modal-header>h2");
 function showMore(id,event)
@@ -115,5 +145,5 @@ function showMore(id,event)
 $('.close').click(function(){
     modal.css('display','none');
 });
- 
+// create an array with nodes
  
