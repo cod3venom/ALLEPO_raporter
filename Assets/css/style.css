@@ -1,0 +1,82 @@
+
+body{ 
+    font: Arial 12px; text-align: center;
+    width: 100%; height: 100%; overflow:hidden !important;
+    white-space: nowrap;    background-color: #200303;
+}
+.shadow{
+	box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2); 
+}
+.centered{
+  display: flex; justify-content: center; align-items: center;
+}
+.flex{
+  display: flex; align-items: flex-start;
+}
+.btw{
+  display: flex; justify-content: space-between;
+}
+
+.topbar{
+  position: fixed; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 8%;
+  background-color: #200303; z-index: 999;
+}
+.topbar button{
+  display: block; width: 10%; height: 30px; margin-top: .5rem; margin-left: .5rem; color: #FDFDFD;
+  background-color: transparent; border:1px solid #C70D17; font-family: 'comforta_bold';
+  cursor: pointer;
+}
+.topbar button:hover{
+  transform: scale(1.05); transition: 500ms;
+}
+
+
+#middle{
+  width: 100%; height: 100vh; margin-top: 5%;  
+  overflow:hidden; 
+}
+.board  #middle .map {
+  width: 95%; height: 100%; margin-left: 1%;
+}
+.board  #middle .map > svg{
+  width: 100%; height:100vh; margin: 0 auto;   background: #200303;
+}
+
+.info_box{
+  position: absolute; top: 13%; right: 8px;
+  width: 200px; height: 200px; background-color: #200303;
+  border:1px solid #C70D17; z-index: 999;
+}
+.info_box button{
+  display: block; width: 95%; height: 35px; margin:0 auto; margin-top: 4px; background-color: transparent; border:none;
+  color: #C70D17; font-family: 'comforta_regular'; text-align: left; cursor: pointer;
+  transition: 500ms;
+}
+.info_box:hover{
+  transition: 500ms; transform:scale(1.07);
+}
+
+.value{
+  color: red; font-family: 'kanit_bold'; font-weight: bold;
+}
+.footer{
+  position: absolute; bottom: 10px; right: 10px; z-index: 10000;
+  color: #00526A; font-family:'comforta_regular';
+}
+
+
+
+
+
+.svg_dash{
+  border-radius: 50%; fill: yellow; stroke: yellow;
+}
+.node text {
+  pointer-events: none; font-family: 'kanit_regular'; font-size:10px;
+}
+.node circle:hover{
+    transition:500ms; transform: scale(5.1);
+}
+.node text:hover{
+    transition:500ms; font-size: 40px; fill: red;
+}

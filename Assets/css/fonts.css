@@ -1,0 +1,17 @@
+
+@font-face{
+    font-family: 'kanit_semi';
+    src: url('FONTS/Kanit-SemiBold.ttf');
+}
+@font-face{
+    font-family: 'kanit_medium';
+    src: url('FONTS/Kanit-Medium.ttf');
+}
+@font-face{
+    font-family: 'comforta_bold';
+    src: url('FONTS/Comfortaa-Bold.ttf');
+}
+@font-face{
+    font-family: 'comforta_regular';
+    src: url('FONTS/Comfortaa-Regular.ttf');
+}
